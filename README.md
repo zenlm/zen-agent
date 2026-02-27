@@ -1,130 +1,126 @@
-# Zen Agent
+# Zen Agent — Agentic AI Framework
 
-Agentic framework for Zen models with MCP support, tool use, and multi-step planning.
+A Python framework for building AI agents with tool use, planning, memory, and multi-step reasoning capabilities. Powered by Zen models from [Zen LM](https://zenlm.org).
 
-Zen Agent is a framework for building LLM applications on top of Zen models. It provides instruction following, tool usage, planning, memory, and Model Context Protocol (MCP) integration out of the box.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ## Features
 
-- **Tool use**: Function calling, code execution, web search, file operations
-- **MCP support**: Connect any MCP server as a tool source
-- **RAG**: Retrieval-augmented generation with document ingestion
-- **Planning**: Multi-step task decomposition and execution
-- **Memory**: Persistent and session-scoped memory backends
-- **GUI**: Optional Gradio-based chat interface
+- **Tool Calling**: Define custom tools; agents invoke them autonomously
+- **Code Execution**: Built-in sandboxed Python interpreter for code tasks
+- **Web Browsing**: Agent-driven web search and page retrieval
+- **Multi-step Planning**: ReAct and function-calling agent loops
+- **RAG Support**: Retrieval-augmented generation over long documents
+- **MCP Integration**: Native Model Context Protocol support
+- **GUI**: Gradio-based web interface for rapid prototyping
 
 ## Installation
 
 ```bash
 # Stable release
-pip install -U "zen-agent[gui,rag,code_interpreter,mcp]"
+pip install zen-agent
 
-# Minimal install
-pip install -U zen-agent
-
-# Development
-git clone https://github.com/zenlm/zen-agent.git
-cd zen-agent
-pip install -e ".[gui,rag,code_interpreter,mcp]"
+# With optional extras
+pip install "zen-agent[gui,rag,code_interpreter,mcp]"
 ```
 
 ## Quick Start
 
-### Connect a model
-
-Zen Agent works with any OpenAI-compatible endpoint. Point it at a local Zen model served via vLLM or Ollama, or any hosted API:
-
 ```python
-import os
-os.environ["ZEN_API_KEY"] = "your-api-key"
-os.environ["ZEN_API_BASE"] = "http://localhost:8000/v1"  # or any OpenAI-compatible URL
-```
+from zen_agent.agents import Assistant
 
-### Basic agent
+# Configure the model
+llm_cfg = {
+    "model": "zenlm/zen-coder",
+    "model_server": "http://localhost:8000/v1",
+    "api_key": "EMPTY",
+    "generate_cfg": {"top_p": 0.8},
+}
 
-```python
-from zen_agent import Assistant
-
-assistant = Assistant(
-    llm_config={"model": "zenlm/zen-coder-flash", "temperature": 0.7},
-    tools=["web_search", "code_interpreter"],
-    system_message="You are a helpful Zen AI assistant.",
-)
-response = assistant.run("Search for the latest AI research papers and summarize them.")
-print(response.messages[-1]["content"])
-```
-
-### MCP tool integration
-
-```python
-from zen_agent import Assistant
-from zen_agent.mcp import MCPClient
-
-mcp = MCPClient("stdio", command="npx", args=["-y", "@modelcontextprotocol/server-filesystem", "/tmp"])
-
-assistant = Assistant(
-    llm_config={"model": "zenlm/zen-max"},
-    tools=[mcp],
-)
-response = assistant.run("List all Python files in /tmp and summarize their contents.")
-```
-
-### Multi-agent pipeline
-
-```python
-from zen_agent import Agent, UserProxyAgent
-
-planner = Agent(
-    name="Planner",
-    llm_config={"model": "zenlm/zen-max"},
-    system_message="Break down complex tasks into actionable steps.",
+# Create an agent with tools and files
+bot = Assistant(
+    llm=llm_cfg,
+    system_message="You are a helpful coding assistant.",
+    function_list=["code_interpreter"],
+    files=["./docs/reference.pdf"],
 )
 
-executor = Agent(
-    name="Executor",
-    llm_config={"model": "zenlm/zen-coder-flash"},
-    system_message="Execute tasks using available tools.",
-    tools=["code_interpreter", "bash"],
-)
-
-user = UserProxyAgent(name="User", human_input_mode="NEVER")
-user.initiate_chat(planner, message="Build and test a REST API in Python.")
+# Run the agent
+messages = []
+while True:
+    query = input("user: ")
+    messages.append({"role": "user", "content": query})
+    for response in bot.run(messages=messages):
+        pass
+    messages.extend(response)
 ```
 
-## GUI
+### Launch Web UI
+
+```python
+from zen_agent.gui import WebUI
+WebUI(bot).run()
+```
+
+### Custom Tool
+
+```python
+from zen_agent.tools.base import BaseTool, register_tool
+
+@register_tool("search_docs")
+class SearchDocs(BaseTool):
+    description = "Search internal documentation for a query."
+    parameters = [{"name": "query", "type": "string", "required": True}]
+
+    def call(self, params: str, **kwargs) -> str:
+        import json5
+        query = json5.loads(params)["query"]
+        # ... your search logic ...
+        return json5.dumps({"results": []})
+```
+
+## Models
+
+Zen Agent works with any OpenAI-compatible endpoint. Recommended models:
+
+| Model | Use Case | Size |
+|-------|----------|------|
+| `zenlm/zen-coder` | Code generation and tool use | 4B |
+| `zenlm/zen-max` | Complex multi-step reasoning | 671B MoE |
+
+Deploy locally with vLLM:
 
 ```bash
-# Launch web interface
-python -m zen_agent.gui
+vllm serve zenlm/zen-coder --port 8000
 ```
 
-## Architecture
+## MCP Support
 
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/files"]
+    }
+  }
+}
 ```
-zen_agent/
-├── llm/          # LLM backends (OpenAI-compatible, local)
-├── tools/        # Built-in tools (search, code, files, MCP)
-├── memory/       # Memory backends (in-memory, vector, persistent)
-├── planning/     # Task decomposition and step tracking
-├── gui/          # Gradio chat interface
-└── examples/     # Example scripts and notebooks
-```
 
-## Examples
-
-See the `examples/` directory for:
-- `basic_assistant.py` - Simple question answering
-- `code_agent.py` - Agentic coding with tool use
-- `mcp_tools.py` - Connecting MCP servers
-- `multi_agent.py` - Multi-agent coordination
-- `rag_pipeline.py` - Document retrieval and QA
+See [Hanzo MCP](https://github.com/hanzoai/mcp) for 260+ pre-built MCP tools.
 
 ## Links
 
-- Models: [huggingface.co/zenlm](https://huggingface.co/zenlm)
-- Docs: [zenlm.org](https://zenlm.org)
-- Issues: [github.com/zenlm/zen-agent/issues](https://github.com/zenlm/zen-agent/issues)
+- **Website**: https://zenlm.org
+- **Models**: https://huggingface.co/zenlm
+- **GitHub**: https://github.com/zenlm
+- **Hanzo AI**: https://hanzo.ai
 
 ## License
 
-Apache 2.0 — Copyright 2024 Zen LM Authors
+Apache 2.0
+
+---
+
+**Zen AI**: Clarity Through Intelligence
