@@ -43,3 +43,12 @@ test/*
 tests/env.sh
 examples/data/*
 test.db
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+QWEN.md
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.pth
