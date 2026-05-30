@@ -32,7 +32,7 @@ from zen_agent.agents import Assistant
 
 # Configure the model
 llm_cfg = {
-    "model": "zenlm/zen-coder",
+    "model": "zenlm/zen-5-coder-gguf",
     "model_server": "http://localhost:8000/v1",
     "api_key": "EMPTY",
     "generate_cfg": {"top_p": 0.8},
@@ -86,13 +86,13 @@ Zen Agent works with any OpenAI-compatible endpoint. Recommended models:
 
 | Model | Use Case | Size |
 |-------|----------|------|
-| `zenlm/zen-coder` | Code generation and tool use | 4B |
-| `zenlm/zen-max` | Complex multi-step reasoning | 671B MoE |
+| `zenlm/zen-5-coder-gguf` | Code generation and tool use | 4B |
+| `zenlm/zen-5-max-gguf` | Complex multi-step reasoning | 671B MoE |
 
 Deploy locally with vLLM:
 
 ```bash
-vllm serve zenlm/zen-coder --port 8000
+vllm serve zenlm/zen-5-coder-gguf --port 8000
 ```
 
 ## MCP Support

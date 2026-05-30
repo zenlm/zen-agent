@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 The Qwen team, Alibaba Group. All rights reserved.
+Copyright 2023 The team, Group. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ Note that for the convenience of inputting tool results into LLMs, the Agent’s
 
 ## 2. Tool Development
 
-Qwen-Agent provides a mechanism for registering tools. For example, to register your own image generation tool:
+-Agent provides a mechanism for registering tools. For example, to register your own image generation tool:
 - Specify the tool’s name, description, and parameters. Note that the string passed to `@register_tool('my_image_gen')` is automatically added as the `.name` attribute of the class and will serve as the unique identifier for the tool.
 - Implement the `call(...)` function.
 

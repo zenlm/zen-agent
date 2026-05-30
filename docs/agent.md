@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 The Qwen team, Alibaba Group. All rights reserved.
+Copyright 2023 The team, Group. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
 This document introduces the usage and development process of the Agent class.
 
 ## 1. Agent Usage
-The Agent class serves as a higher-level interface for Qwen-Agent, where an Agent object integrates the interfaces for tool calls and LLM (Large Language Model).
+The Agent class serves as a higher-level interface for -Agent, where an Agent object integrates the interfaces for tool calls and LLM (Large Language Model).
 The Agent receives a list of messages as input and produces a generator that yields a list of messages, effectively providing a stream of output messages.
 
 Different Agent classes have various workflows. In the [agents](../qwen_agent/agents) directory, we provide several different fundamental Agent subclasses.
@@ -99,7 +99,7 @@ It is also possible to nest other Agents, such as using `Assistant.run(...)` to 
 ### 2.1. Nested Development
 For example, in the scenario below, I want to create a custom Agent for visual story telling.
 This Agent only needs to receive an image URL to automatically generate a composition:
-In this Agent, I nest an image_agent that uses the Qwen-VL model to help me understand the content of the image,
+In this Agent, I nest an image_agent that uses the -VL model to help me understand the content of the image,
 and then I also nest a writing_agent that is responsible for learning writing techniques and helping me compose a piece of writing.
 
 Note: This is just one way to implement an visual story telling Agent; other methods could achieve the same goal, such as using only an image_agent to complete both image comprehension and writing tasks.
