@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 The Qwen team, Alibaba Group. All rights reserved.
+Copyright 2023 The team, Group. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ print(res)
 注意，为了方便将工具结果输入LLM，Agent的`_call_tool(...)`接口会将所有工具返回的结果转为str类型，具体见[Agent类](../qwen_agent/agent.py)。
 
 ## 2. Tool 开发
-Qwen-Agent提供了注册工具的机制，例如，下面我们注册一个自己的图片生成工具：
+-Agent提供了注册工具的机制，例如，下面我们注册一个自己的图片生成工具：
 - 指定工具的name、description、和parameters，注意@register_tool('my_image_gen')中的'my_image_gen'会被自动添加为这个类的.name属性，将作为工具的唯一标识。
 - 实现`call(...)`函数
 

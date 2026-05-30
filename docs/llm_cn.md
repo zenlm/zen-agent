@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 The Qwen team, Alibaba Group. All rights reserved.
+Copyright 2023 The team, Group. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ limitations under the License.
 
 ## 1. LLM 使用
 
-目前，Qwen-Agent提供了Qwen的DashScope API和OpenAI API访问接口；Qwen-VL的DashScope API访问接口。均已经支持流式Function Calling。
+目前，-Agent提供了Qwen的DashScope API和OpenAI API访问接口；-VL的DashScope API访问接口。均已经支持流式Function Calling。
 
 ### 1.1. 外部直接调用
 LLM统一使用`get_chat_model(cfg: Optional[Dict] = None) -> BaseChatModel`接口来调用，参数传入LLM的配置文件，
@@ -91,7 +91,7 @@ for responses in llm.chat(messages=messages,
 
 ## 2. LLM 开发
 
-Qwen-Agent提供了注册LLM的机制，在[LLM 基类](../qwen_agent/llm/base.py)中，实现了统一的`llm.chat(...)`接口，
+-Agent提供了注册LLM的机制，在[LLM 基类](../qwen_agent/llm/base.py)中，实现了统一的`llm.chat(...)`接口，
 新注册的LLM仅需要实现特有的三个函数：
 - 非流式生成接口
 - 流式生成接口（如果LLM本身不支持流式生成，可以将非流式结果封装成生成器返回）

@@ -1,5 +1,5 @@
 <!---
-Copyright 2023 The Qwen team, Alibaba Group. All rights reserved.
+Copyright 2023 The team, Group. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 
 [中文](./README_CN.md) ｜ English
 
-The usage and development process of Qwen-Agent.
+The usage and development process of -Agent.
 
 # Contents
 
